@@ -30,7 +30,18 @@ function App() {
     if (viewMode === 'flight' || viewMode === 'results') {
       return <FlightSimulation />;
     }
-    return <RocketBuilder />;
+    try {
+      return <RocketBuilder />;
+    } catch (error) {
+      console.error('Error rendering RocketBuilder:', error);
+      return (
+        <div style={{ padding: '40px', color: 'red', background: '#1a1a2e', minHeight: '100vh' }}>
+          <h2>Error loading Rocket Builder</h2>
+          <pre>{error.message}</pre>
+          <button onClick={() => window.location.reload()}>Reload</button>
+        </div>
+      );
+    }
   }
   
   // Render Simulator (default)

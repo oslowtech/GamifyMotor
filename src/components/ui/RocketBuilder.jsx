@@ -1041,7 +1041,7 @@ function MotorTab() {
 function StabilityDisplay() {
   const { stability, rocketConfig } = useRocketStore();
   
-  if (!stability) return null;
+  if (!stability || !rocketConfig?.noseCone) return null;
   
   const getStabilityColor = () => {
     if (stability.isUnstable) return '#FF4444';
@@ -1055,13 +1055,19 @@ function StabilityDisplay() {
     return 'STABLE';
   };
   
+  const stabilityMargin = stability.stabilityMargin ?? 0;
+  const cg = stability.cg ?? 0;
+  const cp = stability.cp ?? 0;
+  const totalMass = stability.totalMass ?? 0;
+  const diameter = rocketConfig.noseCone?.diameter ?? 0.054;
+  
   return (
     <div className="stability-display">
       <h3>Stability Analysis</h3>
       
       <div className="stability-indicator" style={{ borderColor: getStabilityColor() }}>
         <span className="stability-value" style={{ color: getStabilityColor() }}>
-          {stability.stabilityMargin?.toFixed(2)} cal
+          {stabilityMargin.toFixed(2)} cal
         </span>
         <span className="stability-status" style={{ color: getStabilityColor() }}>
           {getStabilityText()}
@@ -1071,26 +1077,26 @@ function StabilityDisplay() {
       <div className="stability-details">
         <div className="detail-row">
           <span>Center of Gravity (CG)</span>
-          <span>{(stability.cg * 1000).toFixed(1)} mm</span>
+          <span>{(cg * 1000).toFixed(1)} mm</span>
         </div>
         <div className="detail-row">
           <span>Center of Pressure (CP)</span>
-          <span>{(stability.cp * 1000).toFixed(1)} mm</span>
+          <span>{(cp * 1000).toFixed(1)} mm</span>
         </div>
         <div className="detail-row">
           <span>Total Mass</span>
-          <span>{(stability.totalMass * 1000).toFixed(0)} g</span>
+          <span>{(totalMass * 1000).toFixed(0)} g</span>
         </div>
         <div className="detail-row">
           <span>Body Diameter</span>
-          <span>{(rocketConfig.noseCone.diameter * 1000).toFixed(0)} mm</span>
+          <span>{(diameter * 1000).toFixed(0)} mm</span>
         </div>
       </div>
       
       <p className="stability-note">
         Recommended: 1.0 - 2.0 calibers for optimal stability.
-        {stability.stabilityMargin < 1.0 && ' Add more fin area or move fins back.'}
-        {stability.stabilityMargin > 3.0 && ' Rocket may weathercock. Reduce fin size.'}
+        {stabilityMargin < 1.0 && ' Add more fin area or move fins back.'}
+        {stabilityMargin > 3.0 && ' Rocket may weathercock. Reduce fin size.'}
       </p>
     </div>
   );
