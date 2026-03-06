@@ -1,6 +1,6 @@
 /**
  * Main App Component
- * 3D Solid Rocket Motor Simulator
+ * 3D Solid Rocket Motor Simulator with Full Rocket Flight Simulation
  */
 import React from 'react';
 import { Leva } from 'leva';
@@ -9,18 +9,33 @@ import ControlPanel from './components/ui/ControlPanel';
 import Charts from './components/ui/Charts';
 import StatusDisplay from './components/ui/StatusDisplay';
 import ReportPage from './components/ui/ReportPage';
+import RocketBuilder from './components/ui/RocketBuilder';
+import FlightSimulation from './components/ui/FlightSimulation';
 import useMotorStore from './store/motorStore';
+import useRocketStore from './store/rocketStore';
 import './App.css';
 
 function App() {
   const { currentPage } = useMotorStore();
+  const { viewMode } = useRocketStore();
   
   // Render Report Page
   if (currentPage === 'report') {
     return <ReportPage />;
   }
   
+  // Render Rocket Builder
+  if (currentPage === 'rocket') {
+    // Check if we're in flight mode
+    if (viewMode === 'flight' || viewMode === 'results') {
+      return <FlightSimulation />;
+    }
+    return <RocketBuilder />;
+  }
+  
   // Render Simulator (default)
+  const { setCurrentPage } = useMotorStore();
+  
   return (
     <div className="app">
       {/* Header */}
@@ -30,6 +45,12 @@ function App() {
           <p className="subtitle">Real-time 3D Propulsion Analysis</p>
         </div>
         <div className="header-controls">
+          <button 
+            className="rocket-builder-btn"
+            onClick={() => setCurrentPage('rocket')}
+          >
+            🚀 Build Rocket
+          </button>
           <a 
             href="https://github.com" 
             target="_blank" 

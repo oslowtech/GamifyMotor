@@ -90,6 +90,24 @@ html, body, #root {
   box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
 }
 
+.rocket-builder-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #4466CC, #6688EE);
+  border: none;
+  border-radius: 6px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rocket-builder-btn:hover {
+  background: linear-gradient(135deg, #5577DD, #77AAFF);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 100, 255, 0.4);
+}
+
 /* Main Canvas Container */
 .canvas-container {
   flex: 1;
