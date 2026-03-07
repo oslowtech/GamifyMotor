@@ -105,21 +105,39 @@ function Rocket3D({ flightState, rocketConfig }) {
           <pointLight color="#FF6600" intensity={2} distance={5} />
         </group>
       )}
-      
-      {/* Parachute visualization */}
-      {flightState?.mainDeployed && (
-        <group position={[0, bodyLength / 2 + 0.5, 0]}>
+    </group>
+  );
+}
+
+// Parachute visualization - rendered separately to always face up
+function ParachuteDisplay({ flightState, position }) {
+  if (!flightState) return null;
+  
+  const SCALE = 100;
+  const pos = position || flightState.position || { x: 0, y: 0, z: 0 };
+  
+  // Position parachute above the rocket in world space
+  const worldX = pos.x / SCALE;
+  const worldY = pos.z / SCALE; // Physics z = Three.js y
+  const worldZ = -pos.y / SCALE;
+  
+  return (
+    <>
+      {/* Main parachute */}
+      {flightState.mainDeployed && (
+        <group position={[worldX, worldY + 0.8, worldZ]}>
+          {/* Canopy - hemisphere opening downward (dome shape) */}
           <mesh>
-            <sphereGeometry args={[0.3, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <sphereGeometry args={[0.4, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
             <meshStandardMaterial color="#FF4444" side={THREE.DoubleSide} transparent opacity={0.8} />
           </mesh>
-          {/* Shroud lines */}
+          {/* Shroud lines connecting to rocket */}
           {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
             <Line
               key={i}
               points={[
-                [Math.sin(angle * Math.PI / 180) * 0.25, 0.1, Math.cos(angle * Math.PI / 180) * 0.25],
-                [0, -0.3, 0]
+                [Math.sin(angle * Math.PI / 180) * 0.35, -0.05, Math.cos(angle * Math.PI / 180) * 0.35],
+                [0, -0.8, 0]
               ]}
               color="#FFFFFF"
               lineWidth={1}
@@ -128,16 +146,29 @@ function Rocket3D({ flightState, rocketConfig }) {
         </group>
       )}
       
-      {/* Drogue visualization */}
-      {flightState?.drogueDeployed && !flightState?.mainDeployed && (
-        <group position={[0, bodyLength / 2 + 0.3, 0]}>
+      {/* Drogue parachute */}
+      {flightState.drogueDeployed && !flightState.mainDeployed && (
+        <group position={[worldX, worldY + 0.5, worldZ]}>
+          {/* Smaller drogue canopy - dome opening downward */}
           <mesh>
-            <sphereGeometry args={[0.12, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <sphereGeometry args={[0.15, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
             <meshStandardMaterial color="#FF8800" side={THREE.DoubleSide} transparent opacity={0.8} />
           </mesh>
+          {/* Shroud lines */}
+          {[0, 90, 180, 270].map((angle, i) => (
+            <Line
+              key={i}
+              points={[
+                [Math.sin(angle * Math.PI / 180) * 0.12, -0.02, Math.cos(angle * Math.PI / 180) * 0.12],
+                [0, -0.5, 0]
+              ]}
+              color="#FFFFFF"
+              lineWidth={1}
+            />
+          ))}
         </group>
       )}
-    </group>
+    </>
   );
 }
 
@@ -559,6 +590,7 @@ export default function FlightSimulation() {
             <Environment maxAltitude={maxAltitude} />
             <FlightTrail history={flightState?.history} />
             <Rocket3D flightState={flightState} rocketConfig={rocketConfig} />
+            <ParachuteDisplay flightState={flightState} />
             
             {cameraMode === 'free' && (
               <OrbitControls enablePan enableZoom enableRotate />

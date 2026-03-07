@@ -755,9 +755,18 @@ export class RocketFlightSimulation {
         };
       }
     } else {
-      // Off rail - update attitude to follow velocity (weathercocking)
-      // Rocket naturally aligns with velocity due to aerodynamic stability
-      if (speed > 1) {
+      // Off rail - update attitude based on flight phase
+      if (this.drogueDeployed || this.mainDeployed) {
+        // Under parachute - rocket hangs vertically with nose up
+        // (parachute attaches to top of rocket)
+        const targetPitch = 0; // Vertical (nose up)
+        const correctionRate = 0.05;
+        
+        this.attitude.pitch += (targetPitch - this.attitude.pitch) * correctionRate;
+        // Yaw slowly damps to zero
+        this.attitude.yaw *= 0.99;
+      } else if (speed > 1) {
+        // Free flight - rocket aligns with velocity (weathercocking)
         const targetPitch = Math.acos(Math.max(-1, Math.min(1, this.velocity.z / speed)));
         const targetYaw = Math.atan2(this.velocity.y, this.velocity.x);
         
