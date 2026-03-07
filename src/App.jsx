@@ -39,8 +39,7 @@ function App() {
       {/* Header */}
       <header className="app-header">
         <div className="header-content">
-          <h1>🚀 Solid Motor Simulator</h1>
-          <p className="subtitle">Real-time 3D Propulsion Analysis</p>
+          <img src="/Screenshot_2026-03-07_070651-removebg-preview.png" alt="IGNITION" className="app-logo" />
         </div>
         <div className="header-controls">
           <button 

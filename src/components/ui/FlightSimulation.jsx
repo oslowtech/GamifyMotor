@@ -544,7 +544,8 @@ export default function FlightSimulation() {
           <button className="back-btn" onClick={handleBackToBuilder}>
             ← Back to Designer
           </button>
-          <h1>🚀 Flight Simulation</h1>
+          <img src="/Screenshot_2026-03-07_070651-removebg-preview.png" alt="IGNITION" className="flight-logo" />
+          <span className="page-title">Flight Simulation</span>
         </div>
         
         <div className="header-controls">

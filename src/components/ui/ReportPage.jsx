@@ -353,6 +353,7 @@ export default function ReportPage() {
           <button className="back-btn" onClick={() => setCurrentPage('simulator')}>
             ← Back to Simulator
           </button>
+          <img src="/Screenshot_2026-03-07_070651-removebg-preview.png" alt="IGNITION" className="report-logo" />
         </div>
         <div className="header-center">
           <h1>Motor Analysis Report</h1>

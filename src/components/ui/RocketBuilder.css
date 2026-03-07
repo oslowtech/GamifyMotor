@@ -55,6 +55,19 @@
   margin: 0;
 }
 
+.builder-logo {
+  height: 32px;
+  width: auto;
+  filter: invert(1);
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #AAAAFF;
+  margin-left: 8px;
+}
+
 .header-actions {
   display: flex;
   gap: 12px;

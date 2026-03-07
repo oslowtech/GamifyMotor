@@ -1182,7 +1182,8 @@ export default function RocketBuilder() {
           <button className="back-btn" onClick={() => setCurrentPage('simulator')}>
             ← Back to Motor Simulator
           </button>
-          <h1>🚀 Rocket Designer</h1>
+          <img src="/Screenshot_2026-03-07_070651-removebg-preview.png" alt="IGNITION" className="builder-logo" />
+          <span className="page-title">Rocket Designer</span>
         </div>
         <div className="header-actions">
           <button className="reset-btn" onClick={resetRocket}>

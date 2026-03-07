@@ -42,6 +42,12 @@ html, body, #root {
   background-clip: text;
 }
 
+.app-logo {
+  height: 40px;
+  width: auto;
+  filter: invert(1); /* Invert black to white for dark theme */
+}
+
 .subtitle {
   font-size: 11px;
   color: #8888AA;
