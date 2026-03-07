@@ -32,7 +32,7 @@ const useRocketStore = create((set, get) => ({
   viewMode: 'builder', // 'builder', 'flight', 'results'
   selectedComponent: null,
   showStabilityOverlay: true,
-  show3DPreview: false,  // Temporarily disabled for debugging
+  show3DPreview: true,
   
   // UI state
   activeTab: 'nosecone', // nosecone, body, fins, recovery, avionics, motor

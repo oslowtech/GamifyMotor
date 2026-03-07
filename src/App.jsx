@@ -16,7 +16,7 @@ import useRocketStore from './store/rocketStore';
 import './App.css';
 
 function App() {
-  const { currentPage } = useMotorStore();
+  const { currentPage, setCurrentPage } = useMotorStore();
   const { viewMode } = useRocketStore();
   
   // Render Report Page
@@ -34,8 +34,6 @@ function App() {
   }
   
   // Render Simulator (default)
-  const { setCurrentPage } = useMotorStore();
-  
   return (
     <div className="app">
       {/* Header */}
