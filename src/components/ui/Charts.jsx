@@ -179,10 +179,10 @@ export default function Charts() {
           onClick={ignite}
           disabled={isRunning || state?.isBurnedOut || state?.hasExploded}
         >
-          🔥 {state?.isBurnedOut ? 'Burned Out' : state?.hasExploded ? 'CATO!' : isRunning ? 'Burning...' : 'IGNITE'}
+          {state?.isBurnedOut ? 'Burned Out' : state?.hasExploded ? 'CATO!' : isRunning ? 'Burning...' : 'IGNITE'}
         </button>
         <button className="reset-btn" onClick={reset}>
-          🔄 Reset
+          Reset
         </button>
       </div>
     </div>

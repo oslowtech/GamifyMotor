@@ -934,7 +934,7 @@ function MotorTab() {
         
         <div className="import-buttons">
           <button className="import-motor-btn" onClick={importMotorFromSimulator}>
-            📥 Import from Simulator
+            Import from Simulator
           </button>
           
           <div className="file-import">
@@ -949,14 +949,14 @@ function MotorTab() {
               className="import-motor-btn secondary"
               onClick={() => fileInputRef.current?.click()}
             >
-              📁 Load from File
+              Load from File
             </button>
           </div>
         </div>
         
         {motorData && (
           <div className="imported-motor-info">
-            <h4>✓ {motorData.name || `Class ${motorData.motorClass || '?'} Motor`}</h4>
+            <h4>{motorData.name || `Class ${motorData.motorClass || '?'} Motor`}</h4>
             <div className="motor-stats">
               <div className="stat">
                 <span className="stat-label">Class</span>
@@ -1159,7 +1159,7 @@ export default function RocketBuilder() {
     { id: 'fins', label: 'Fins', icon: '◢' },
     { id: 'recovery', label: 'Recovery', icon: '⟡' },
     { id: 'avionics', label: 'Avionics', icon: '◉' },
-    { id: 'motor', label: 'Motor', icon: '🔥' },
+    { id: 'motor', label: 'Motor', icon: '●' },
   ];
   
   const renderActiveTab = () => {
@@ -1194,7 +1194,7 @@ export default function RocketBuilder() {
             onClick={handleStartFlight}
             disabled={!motorData}
           >
-            🚀 Launch Simulation
+            Launch Simulation
           </button>
         </div>
       </header>

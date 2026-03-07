@@ -1,4 +1,4 @@
-# 🚀 GamifyMotor: 3D Solid Rocket Motor Simulator
+# GamifyMotor: 3D Solid Rocket Motor Simulator
 
 A modern, interactive web app for simulating, visualizing, and analyzing solid rocket motors in real time. Built with React, React Three Fiber, Zustand, Leva, and Chart.js.
 

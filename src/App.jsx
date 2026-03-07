@@ -46,7 +46,7 @@ function App() {
             className="rocket-builder-btn"
             onClick={() => setCurrentPage('rocket')}
           >
-            🚀 Build Rocket
+            Build Rocket
           </button>
           <a 
             href="https://github.com" 
@@ -69,9 +69,9 @@ function App() {
         
         {/* Instructions Overlay */}
         <div className="instructions">
-          <p>🖱️ <strong>Orbit:</strong> Left-click + drag</p>
-          <p>🔍 <strong>Zoom:</strong> Scroll wheel</p>
-          <p>🎯 <strong>Pan:</strong> Right-click + drag</p>
+          <p><strong>Orbit:</strong> Left-click + drag</p>
+          <p><strong>Zoom:</strong> Scroll wheel</p>
+          <p><strong>Pan:</strong> Right-click + drag</p>
         </div>
       </main>
       
@@ -102,7 +102,7 @@ function App() {
           },
         }}
         titleBar={{
-          title: '⚙️ Motor Configuration',
+          title: 'Motor Configuration',
         }}
       />
       <ControlPanel />

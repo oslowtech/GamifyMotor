@@ -82,7 +82,7 @@ export default function RocketBuilderTest() {
       justifyContent: 'center',
       gap: '20px'
     }}>
-      <h1>🚀 Rocket Builder Debug</h1>
+      <h1>Rocket Builder Debug</h1>
       <p style={{ color: '#aaa' }}>Basic React rendering works.</p>
       <p style={{ color: '#88ff88', fontFamily: 'monospace' }}>Store Status: {storeStatus}</p>
       

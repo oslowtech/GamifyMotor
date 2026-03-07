@@ -363,10 +363,10 @@ export default function ReportPage() {
         </div>
         <div className="header-right">
           <button className="download-btn json" onClick={downloadJSONReport} disabled={!hasData}>
-            📄 Download JSON
+            Download JSON
           </button>
           <button className="download-btn csv" onClick={downloadCSVData} disabled={!hasData}>
-            📊 Download CSV
+            Download CSV
           </button>
         </div>
       </header>

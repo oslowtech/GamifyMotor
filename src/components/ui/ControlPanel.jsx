@@ -36,8 +36,8 @@ export default function ControlPanel() {
   
   // Simulation Controls
   useControls('Simulation', {
-    '🚀 Build Rocket': button(() => setCurrentPage('rocket')),
-    '💾 Export Motor': button(() => downloadMotor()),
+    'Build Rocket': button(() => setCurrentPage('rocket')),
+    'Export Motor': button(() => downloadMotor()),
     'View Report': button(() => setCurrentPage('report')),
     'Reset': button(() => reset()),
     'Time Scale': {

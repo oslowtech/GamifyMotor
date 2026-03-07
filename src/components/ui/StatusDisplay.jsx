@@ -86,7 +86,6 @@ export default function StatusDisplay() {
       {hasExploded && (
         <div className="cato-overlay">
           <div className="cato-text">
-            <span className="cato-icon">💥</span>
             <span>CATO</span>
             <span className="cato-subtitle">Catastrophic Failure</span>
           </div>
@@ -105,7 +104,7 @@ export default function StatusDisplay() {
           <span className="telemetry-value">{formatPressure(chamberPressure)}<span className="unit">MPa</span></span>
         </div>
         
-        <div className="telemetry-item highlight">
+        <div className="telemetry-item">
           <span className="telemetry-label">Thrust</span>
           <span className="telemetry-value">{formatThrust(thrust)}<span className="unit">N</span></span>
         </div>
