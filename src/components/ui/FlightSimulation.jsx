@@ -16,32 +16,32 @@ function Rocket3D({ flightState, rocketConfig }) {
   const flameRef = useRef();
   
   const position = flightState?.position || { x: 0, y: 0, z: 0 };
-  const velocity = flightState?.velocity || { x: 0, y: 0, z: 0 };
+  const attitude = flightState?.attitude || { pitch: 0, yaw: 0, roll: 0 };
   const thrust = flightState?.thrust || 0;
   const phase = flightState?.phase || 'pad';
   
-  // Calculate rocket orientation from velocity
-  const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2);
+  // Scale factor for visualization (1 unit = 100m altitude)
+  const SCALE = 100;
   
   useFrame((state, delta) => {
     if (!rocketRef.current) return;
     
-    if (speed > 1) {
-      // Point rocket in direction of travel
-      const dir = new THREE.Vector3(velocity.x, velocity.z, -velocity.y).normalize();
-      const up = new THREE.Vector3(0, 1, 0);
-      const quaternion = new THREE.Quaternion();
-      const matrix = new THREE.Matrix4();
-      matrix.lookAt(new THREE.Vector3(0, 0, 0), dir, up);
-      quaternion.setFromRotationMatrix(matrix);
-      rocketRef.current.quaternion.slerp(quaternion, 0.1);
-    } else if (phase === 'pad' || phase === 'boost') {
-      // On rail - point mostly vertical with slight tilt
-      const railAngle = (rocketConfig?.launch?.railAngle || 5) * Math.PI / 180;
-      const targetQuat = new THREE.Quaternion();
-      targetQuat.setFromEuler(new THREE.Euler(railAngle, 0, 0, 'XYZ'));
-      rocketRef.current.quaternion.slerp(targetQuat, 0.1);
-    }
+    // Apply attitude from physics
+    // Physics: pitch = angle from vertical (z), yaw = rotation around z
+    // Three.js: need to convert to Euler angles
+    // Rocket model points up (+Y in local space), physics +Z is up
+    
+    // Create rotation: first rotate around X by pitch (tilt from vertical)
+    // then rotate around Y by yaw (compass direction)
+    const euler = new THREE.Euler(
+      attitude.pitch,  // Tilt forward/back
+      -attitude.yaw,   // Compass direction (negate for Three.js convention)
+      0,
+      'YXZ'
+    );
+    
+    const targetQuat = new THREE.Quaternion().setFromEuler(euler);
+    rocketRef.current.quaternion.slerp(targetQuat, 0.15);
     
     // Animate flame
     if (flameRef.current && thrust > 0) {
@@ -54,10 +54,14 @@ function Rocket3D({ flightState, rocketConfig }) {
   const bodyRadius = 0.05;
   const noseLength = 0.2;
   
+  // Scale factor: 1 Three.js unit = SCALE meters
+  // This allows us to see a 1000m flight in reasonable view space
+  //const SCALE = 100;
+  
   return (
     <group 
       ref={rocketRef}
-      position={[position.x, position.z / 100, -position.y]} // Physics: z=up, Three.js: y=up
+      position={[position.x / SCALE, position.z / SCALE, -position.y / SCALE]} 
     >
       {/* Nose cone */}
       <mesh position={[0, bodyLength / 2 + noseLength / 2, 0]}>
@@ -139,18 +143,19 @@ function Rocket3D({ flightState, rocketConfig }) {
 
 // Ground and environment
 function Environment({ maxAltitude }) {
-  const scale = Math.max(100, maxAltitude / 10);
+  const SCALE = 100; // 1 Three.js unit = 100 meters
+  const groundSize = Math.max(20, maxAltitude / SCALE * 2);
   
   return (
     <>
       {/* Ground plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[scale * 2, scale * 2]} />
+        <planeGeometry args={[groundSize, groundSize]} />
         <meshStandardMaterial color="#3a5f3a" />
       </mesh>
       
       {/* Grid */}
-      <gridHelper args={[scale * 2, 40, '#446644', '#334433']} position={[0, 0.01, 0]} />
+      <gridHelper args={[groundSize, 40, '#446644', '#334433']} position={[0, 0.01, 0]} />
       
       {/* Launch rail */}
       <mesh position={[0, 0.75, 0]}>
@@ -160,7 +165,7 @@ function Environment({ maxAltitude }) {
       
       {/* Altitude markers */}
       {[100, 200, 500, 1000, 2000].filter(h => h < maxAltitude * 1.2).map(height => (
-        <group key={height} position={[0, height / 100, 0]}>
+        <group key={height} position={[0, height / SCALE, 0]}>
           <Text
             position={[2, 0, 0]}
             fontSize={0.15}
@@ -179,11 +184,13 @@ function Environment({ maxAltitude }) {
 function FlightTrail({ history }) {
   if (!history || history.altitude.length < 2) return null;
   
+  const SCALE = 100; // 1 Three.js unit = 100 meters
+  
   // Use actual 3D positions if available, otherwise just altitude
   const points = history.altitude.map((alt, i) => {
-    const x = history.positionX?.[i] || 0;
-    const y = history.positionZ?.[i] / 100 || alt / 100; // z is altitude in physics, y is up in Three.js
-    const z = -(history.positionY?.[i] || 0); // Negate Y for Three.js convention
+    const x = (history.positionX?.[i] || 0) / SCALE;
+    const y = (history.positionZ?.[i] || alt) / SCALE; // z is altitude in physics, y is up in Three.js
+    const z = -(history.positionY?.[i] || 0) / SCALE; // Negate Y for Three.js convention
     return [x, y, z];
   });
   
@@ -201,15 +208,16 @@ function FlightTrail({ history }) {
 // Camera controller that follows rocket
 function CameraController({ flightState, viewMode }) {
   const cameraRef = useRef();
+  const SCALE = 100; // 1 Three.js unit = 100 meters
   
   useFrame(() => {
     if (!cameraRef.current || !flightState) return;
     
     // Convert physics coordinates to Three.js (physics z=up -> Three.js y=up)
     const pos = flightState.position || { x: 0, y: 0, z: 0 };
-    const rocketX = pos.x;
-    const rocketY = pos.z / 100; // Scale down altitude
-    const rocketZ = -pos.y;
+    const rocketX = pos.x / SCALE;
+    const rocketY = pos.z / SCALE;
+    const rocketZ = -pos.y / SCALE;
     
     if (viewMode === 'follow') {
       // Follow camera - offset behind and above rocket
