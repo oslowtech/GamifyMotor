@@ -574,6 +574,9 @@ export class RocketFlightSimulation {
       drag: [],
       phase: [],
       stabilityMargin: [],
+      positionX: [],
+      positionY: [],
+      positionZ: [],
     };
   }
   
@@ -778,6 +781,9 @@ export class RocketFlightSimulation {
       this.history.drag.push(dragForce);
       this.history.phase.push(this.phase);
       this.history.stabilityMargin.push(this.stability.stabilityMargin);
+      this.history.positionX.push(this.position.x);
+      this.history.positionY.push(this.position.y);
+      this.history.positionZ.push(this.position.z);
     }
     
     return this.getState();

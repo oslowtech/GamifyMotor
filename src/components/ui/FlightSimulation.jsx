@@ -57,7 +57,7 @@ function Rocket3D({ flightState, rocketConfig }) {
   return (
     <group 
       ref={rocketRef}
-      position={[position.x, position.z / 100, -position.y]} // Scale down for visualization
+      position={[position.x, position.z / 100, -position.y]} // Physics: z=up, Three.js: y=up
     >
       {/* Nose cone */}
       <mesh position={[0, bodyLength / 2 + noseLength / 2, 0]}>
@@ -179,10 +179,11 @@ function Environment({ maxAltitude }) {
 function FlightTrail({ history }) {
   if (!history || history.altitude.length < 2) return null;
   
+  // Use actual 3D positions if available, otherwise just altitude
   const points = history.altitude.map((alt, i) => {
-    const x = 0;
-    const y = alt / 100;
-    const z = 0;
+    const x = history.positionX?.[i] || 0;
+    const y = history.positionZ?.[i] / 100 || alt / 100; // z is altitude in physics, y is up in Three.js
+    const z = -(history.positionY?.[i] || 0); // Negate Y for Three.js convention
     return [x, y, z];
   });
   
@@ -204,19 +205,23 @@ function CameraController({ flightState, viewMode }) {
   useFrame(() => {
     if (!cameraRef.current || !flightState) return;
     
-    const altitude = (flightState.altitude || 0) / 100;
+    // Convert physics coordinates to Three.js (physics z=up -> Three.js y=up)
+    const pos = flightState.position || { x: 0, y: 0, z: 0 };
+    const rocketX = pos.x;
+    const rocketY = pos.z / 100; // Scale down altitude
+    const rocketZ = -pos.y;
     
     if (viewMode === 'follow') {
-      // Follow camera
+      // Follow camera - offset behind and above rocket
       cameraRef.current.position.lerp(
-        new THREE.Vector3(5, altitude + 2, 5),
+        new THREE.Vector3(rocketX + 5, rocketY + 2, rocketZ + 5),
         0.05
       );
-      cameraRef.current.lookAt(0, altitude, 0);
+      cameraRef.current.lookAt(rocketX, rocketY, rocketZ);
     } else if (viewMode === 'ground') {
       // Ground tracking view
       cameraRef.current.position.set(10, 2, 10);
-      cameraRef.current.lookAt(0, Math.min(altitude, 30), 0);
+      cameraRef.current.lookAt(rocketX, Math.min(rocketY, 30), rocketZ);
     }
   });
   
